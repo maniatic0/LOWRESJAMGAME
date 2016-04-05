@@ -1,6 +1,7 @@
 ﻿using System;
+using UnityEngine;
 
-class Utilidades
+public static class Utilidades
 {
     /// <summary>
     /// Utilidad para saber si un rectangulo esta dentro de otro

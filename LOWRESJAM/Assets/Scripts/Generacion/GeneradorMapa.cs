@@ -2,11 +2,6 @@
 using System.Collections;
 
 public class GeneradorMapa : MonoBehaviour {
-    // The type of tile that will be laid in a specific position.
-    public enum TileType
-    {
-        Wall, Floor,
-    }
 
 
     public int columnas = 100;                                 // The number of columns on the board (how wide it will be).
@@ -109,57 +104,65 @@ public class GeneradorMapa : MonoBehaviour {
 
     void MarcarValoresDeTileDePasillos()
     {
+        Pasillo currentPasillo;
+        int xCoord;
+        int yCoord;
         // Go through every corridor...
         for (int i = 0; i < pasillos.Length; i++)
         {
-            Pasillo currentCorridor = pasillos[i];
-            
-            // Start the coordinates at the start of the corridor.
-            int xCoord = currentCorridor.startXPos;
-            int yCoord = currentCorridor.startYPos;
+            currentPasillo = pasillos[i];
 
-            switch (currentCorridor.direccion)
+            for (int r = 0; r < currentPasillo.cantidad; r++)
             {
-                case Direccion.Norte:
-                    for (int j = 0; j < currentCorridor.longitud; j++)
-                    {
-                        for (int k = 0; k < currentCorridor.ancho; k++)
+                Corredor currentCorridor = currentPasillo.corredores[r];
+
+                // Start the coordinates at the start of the corridor.
+                xCoord = currentCorridor.startXPos;
+                yCoord = currentCorridor.startYPos;
+
+                switch (currentCorridor.direccion)
+                {
+                    case Direccion.Norte:
+                        for (int j = 0; j < currentCorridor.longitud; j++)
                         {
-                            // Set the tile at these coordinates to Floor.
-                            tiles[xCoord + k][yCoord + j] = TileType.Floor;
+                            for (int k = 0; k < currentCorridor.ancho; k++)
+                            {
+                                // Set the tile at these coordinates to Floor.
+                                tiles[xCoord + k][yCoord + j] = TileType.Floor;
+                            }
                         }
-                    }
-                    break;
-                case Direccion.Este:
-                    for (int j = 0; j < currentCorridor.longitud; j++)
-                    {
-                        for (int k = 0; k < currentCorridor.ancho; k++)
+                        break;
+                    case Direccion.Este:
+                        for (int j = 0; j < currentCorridor.longitud; j++)
                         {
-                            // Set the tile at these coordinates to Floor.
-                            tiles[xCoord + j][yCoord + k] = TileType.Floor;
+                            for (int k = 0; k < currentCorridor.ancho; k++)
+                            {
+                                // Set the tile at these coordinates to Floor.
+                                tiles[xCoord + j][yCoord + k] = TileType.Floor;
+                            }
                         }
-                    }
-                    break;
-                case Direccion.Sur:
-                    for (int j = 0; j < currentCorridor.longitud; j++)
-                    {
-                        for (int k = 0; k < currentCorridor.ancho; k++)
+                        break;
+                    case Direccion.Sur:
+                        for (int j = 0; j < currentCorridor.longitud; j++)
                         {
-                            // Set the tile at these coordinates to Floor.
-                            tiles[xCoord + k][yCoord - j] = TileType.Floor;
-                        } 
-                    }
-                    break;
-                case Direccion.Oeste:
-                    for (int j = 0; j < currentCorridor.longitud; j++)
-                    {
-                        for (int k = 0; k < currentCorridor.ancho; k++)
+                            for (int k = 0; k < currentCorridor.ancho; k++)
+                            {
+                                // Set the tile at these coordinates to Floor.
+                                tiles[xCoord + k][yCoord - j] = TileType.Floor;
+                            }
+                        }
+                        break;
+                    case Direccion.Oeste:
+                        for (int j = 0; j < currentCorridor.longitud; j++)
                         {
-                            // Set the tile at these coordinates to Floor.
-                            tiles[xCoord - j][yCoord + k] = TileType.Floor;
-                        } 
-                    }
-                    break;
+                            for (int k = 0; k < currentCorridor.ancho; k++)
+                            {
+                                // Set the tile at these coordinates to Floor.
+                                tiles[xCoord - j][yCoord + k] = TileType.Floor;
+                            }
+                        }
+                        break;
+                }
             }
         }
     }
@@ -179,6 +182,31 @@ public class GeneradorMapa : MonoBehaviour {
             Debug.Log(texto);
         }
     }
+
+    public static void InstanciarMatrizDeEnumTileTypes(TileType[][] Matriz, int Columnas, int Filas, GameObject[] Walls, GameObject[] Floors, GameObject Parent, Vector3 Centro)
+    {
+        int centroX = (Columnas - 1) / 2;
+        int centroY = (Filas - 1) / 2;
+
+        Vector3 rt = Walls[0].transform.localScale;
+        float alto = rt.y / 100f;
+        float ancho = rt.x / 100f;
+
+        Vector3 inicio = new Vector3(Centro.x - ancho * (float)centroX, Centro.y + alto * (float)centroY, 0);
+        Vector3 fila;
+        for (int i = 0; i < Columnas; i++)
+        {
+            fila = inicio;
+            for (int j = 0; j < Filas; j++)
+            {
+                GameObject instancia = (GameObject)Instantiate(Matriz[i][j].Transformar(Walls, Floors), fila, Quaternion.identity);
+                instancia.transform.SetParent(Parent.transform);
+                fila.x += ancho;
+            }
+            inicio.y -= alto;
+        }
+    }
+
     private void Start()
     {
         // Create the board holder.
@@ -191,7 +219,9 @@ public class GeneradorMapa : MonoBehaviour {
         MarcarValoresTileDeCuartos();
         MarcarValoresDeTileDePasillos();
 
-        Mostrar();
+        //Mostrar();
+
+        InstanciarMatrizDeEnumTileTypes(tiles, columnas, filas, wallTiles, floorTiles, boardHolder, Vector3.zero);
         /*
         InstantiateTiles();
         InstantiateOuterWalls(); */

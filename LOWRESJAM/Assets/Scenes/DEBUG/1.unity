@@ -146,7 +146,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 2
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -183,24 +183,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8019db6ac89ec1a46bd385825b4775b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  columnas: 100
-  filas: 100
+  columnas: 400
+  filas: 400
   numeroCuartos:
-    minimo: 15
-    maximo: 20
+    minimo: 20
+    maximo: 30
   anchoCuarto:
     minimo: 3
-    maximo: 10
+    maximo: 6
   alturaCuarto:
     minimo: 3
-    maximo: 10
+    maximo: 8
   longitudPasillo:
-    minimo: 6
-    maximo: 10
+    minimo: 10
+    maximo: 50
   anchoPasillo:
-    minimo: 6
-    maximo: 10
-  floorTiles: []
-  wallTiles: []
+    minimo: 2
+    maximo: 3
+  floorTiles:
+  - {fileID: 127906, guid: cfebed5dd8d2ed14d915e86dffc79288, type: 2}
+  - {fileID: 158682, guid: 48f474886904add4e9d3830bd3c41492, type: 2}
+  wallTiles:
+  - {fileID: 184012, guid: bd1c4ca01f8697e49b3ad71c87ab8829, type: 2}
+  - {fileID: 172732, guid: 649ce89865b82e34186062a1207e6d9d, type: 2}
   outerWallTiles: []
   player: {fileID: 0}
