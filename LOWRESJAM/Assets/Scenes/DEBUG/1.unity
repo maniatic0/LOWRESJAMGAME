@@ -85,6 +85,65 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &1169520634
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1169520636}
+  - 114: {fileID: 1169520635}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1169520635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1169520634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8019db6ac89ec1a46bd385825b4775b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  columnas: 127
+  filas: 127
+  numeroCuartos:
+    minimo: 20
+    maximo: 30
+  anchoCuarto:
+    minimo: 5
+    maximo: 10
+  alturaCuarto:
+    minimo: 4
+    maximo: 10
+  longitudPasillo:
+    minimo: 10
+    maximo: 50
+  anchoPasillo:
+    minimo: 2
+    maximo: 3
+  Borde: 8
+  texturas: {fileID: 2100000, guid: 3ef0acf1d64e9ce4a94d6bb619bebe1d, type: 2}
+  player: {fileID: 0}
+--- !u!4 &1169520636
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1169520634}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00243954, y: -0.00042798914, z: -0.000104949395}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
 --- !u!1 &1492017658
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,7 +156,6 @@ GameObject:
   - 92: {fileID: 1492017661}
   - 124: {fileID: 1492017660}
   - 81: {fileID: 1492017659}
-  - 114: {fileID: 1492017664}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -172,39 +230,3 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &1492017664
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1492017658}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8019db6ac89ec1a46bd385825b4775b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  columnas: 400
-  filas: 400
-  numeroCuartos:
-    minimo: 20
-    maximo: 30
-  anchoCuarto:
-    minimo: 3
-    maximo: 6
-  alturaCuarto:
-    minimo: 3
-    maximo: 8
-  longitudPasillo:
-    minimo: 10
-    maximo: 50
-  anchoPasillo:
-    minimo: 2
-    maximo: 3
-  floorTiles:
-  - {fileID: 127906, guid: cfebed5dd8d2ed14d915e86dffc79288, type: 2}
-  - {fileID: 158682, guid: 48f474886904add4e9d3830bd3c41492, type: 2}
-  wallTiles:
-  - {fileID: 184012, guid: bd1c4ca01f8697e49b3ad71c87ab8829, type: 2}
-  - {fileID: 172732, guid: 649ce89865b82e34186062a1207e6d9d, type: 2}
-  outerWallTiles: []
-  player: {fileID: 0}

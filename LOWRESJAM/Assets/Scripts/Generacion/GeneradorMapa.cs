@@ -11,15 +11,20 @@ public class GeneradorMapa : MonoBehaviour {
     public RangoInt alturaCuarto = new RangoInt(3, 10);        // The range of heights rooms can have.
     public RangoInt longitudPasillo = new RangoInt(6, 10);    // The range of lengths corridors between rooms can have.
     public RangoInt anchoPasillo = new RangoInt(6, 10);    // The range of widths corridors between rooms can have.
-    public GameObject[] floorTiles;                           // An array of floor tile prefabs.
-    public GameObject[] wallTiles;                            // An array of wall tile prefabs.
-    public GameObject[] outerWallTiles;                       // An array of outer wall tile prefabs.
+
+    public float Borde;
+    public Material texturas;
     public GameObject player;
 
     private TileType[][] tiles;                               // A jagged array of tile types representing the board, like a grid.
     private Cuarto[] cuartos;                                     // All the rooms that are created for this board.
     private Pasillo[] pasillos;                             // All the corridors that connect the rooms.
     private GameObject boardHolder;                           // GameObject that acts as a container for all other tiles.
+
+    private Mesh mesh;
+    private Vector3[] vertices;
+    private Vector3[] triangulos;
+    private Vector3[] uv;
 
     void SetupArregloTiles()
     {
@@ -69,16 +74,10 @@ public class GeneradorMapa : MonoBehaviour {
                 // Setup the corridor based on the room that was just created.
                 pasillos[i].Setup(cuartos[i], longitudPasillo, anchoPasillo, columnas, filas, false);
             }
-            /*
-
-            if (i == rooms.Length * .5f)
-            {
-                Vector3 playerPos = new Vector3(rooms[i].xPos, rooms[i].yPos, 0);
-                Instantiate(player, playerPos, Quaternion.identity);
-            } */
         }
 
     }
+
     void MarcarValoresTileDeCuartos()
     {
         // Go through all the rooms...
@@ -183,28 +182,80 @@ public class GeneradorMapa : MonoBehaviour {
         }
     }
 
-    public static void InstanciarMatrizDeEnumTileTypes(TileType[][] Matriz, int Columnas, int Filas, GameObject[] Walls, GameObject[] Floors, GameObject Parent, Vector3 Centro)
+    public static void InstanciarMatrizDeEnumTileTypes(TileType[][] Matriz, int Columnas, int Filas, float borde, Material Texturas, GameObject Parent, Vector3 Centro)
     {
         int centroX = (Columnas - 1) / 2;
         int centroY = (Filas - 1) / 2;
 
-        Vector3 rt = Walls[0].transform.localScale;
-        float alto = rt.y / 100f;
-        float ancho = rt.x / 100f;
+        float alto = borde / 100f;
+        float ancho = borde / 100f;
 
-        Vector3 inicio = new Vector3(Centro.x - ancho * (float)centroX, Centro.y + alto * (float)centroY, 0);
+        int numeroTiles = Columnas * Filas;
+        int numeroTriangulos = numeroTiles * 6;
+        int numeroVertices = numeroTiles * 4;
+
+        Mesh mesh = new Mesh();
+        Vector3[] vertices = new Vector3[numeroVertices];
+        int[] triangulos = new int[numeroTriangulos];
+        Vector2[] uv = new Vector2[numeroVertices];
+
+        int iterVertices = 0;
+        int iterTriangulos = 0;
+
+        Vector3 inicio = new Vector3(Centro.x - ancho * ((float)centroX + 0.5f), Centro.y + alto * ((float)centroY + 0.5f), 0);
         Vector3 fila;
         for (int i = 0; i < Columnas; i++)
         {
             fila = inicio;
             for (int j = 0; j < Filas; j++)
             {
+                vertices[iterVertices + 0] = fila;
+                vertices[iterVertices + 1] = fila + new Vector3(ancho, 0, 0);
+                vertices[iterVertices + 2] = fila + new Vector3(ancho, -alto, 0);
+                vertices[iterVertices + 3] = fila + new Vector3(0, -alto, 0);
+
+                triangulos[iterTriangulos + 0] = iterVertices + 0;
+                triangulos[iterTriangulos + 1] = iterVertices + 1;
+                triangulos[iterTriangulos + 2] = iterVertices + 2;
+                triangulos[iterTriangulos + 3] = iterVertices + 0;
+                triangulos[iterTriangulos + 4] = iterVertices + 2;
+                triangulos[iterTriangulos + 5] = iterVertices + 3;
+
+                switch (Matriz[i][j])
+                {
+                    case TileType.Wall:
+                        uv[iterVertices + 0] = new Vector2(0, 0.5f);
+                        uv[iterVertices + 1] = new Vector2(0.5f, 0.5f);
+                        uv[iterVertices + 2] = new Vector2(0.5f, 1f);
+                        uv[iterVertices + 3] = new Vector2(0, 1f);
+                        break;
+                    case TileType.Floor:
+                        uv[iterVertices + 0] = new Vector2(0, 0);
+                        uv[iterVertices + 1] = new Vector2(0.5f, 0);
+                        uv[iterVertices + 2] = new Vector2(0.5f, 0.5f);
+                        uv[iterVertices + 3] = new Vector2(0, 0.5f);
+                        break;
+                }
+
+
+                iterVertices += 4;
+                iterTriangulos += 6;
+
+                /*
                 GameObject instancia = (GameObject)Instantiate(Matriz[i][j].Transformar(Walls, Floors), fila, Quaternion.identity);
-                instancia.transform.SetParent(Parent.transform);
+                instancia.transform.SetParent(Parent.transform); */
                 fila.x += ancho;
             }
             inicio.y -= alto;
         }
+        mesh = Parent.AddComponent<MeshFilter>().mesh;
+        mesh.Clear();
+        mesh.vertices = vertices;
+        mesh.triangles = triangulos;
+        mesh.uv = uv;
+        mesh.Optimize();
+        mesh.RecalculateNormals();
+        Parent.AddComponent<MeshRenderer>().material = Texturas;
     }
 
     private void Start()
@@ -221,7 +272,7 @@ public class GeneradorMapa : MonoBehaviour {
 
         //Mostrar();
 
-        InstanciarMatrizDeEnumTileTypes(tiles, columnas, filas, wallTiles, floorTiles, boardHolder, Vector3.zero);
+        InstanciarMatrizDeEnumTileTypes(tiles, columnas, filas, Borde, texturas, boardHolder, Vector3.zero);
         /*
         InstantiateTiles();
         InstantiateOuterWalls(); */
